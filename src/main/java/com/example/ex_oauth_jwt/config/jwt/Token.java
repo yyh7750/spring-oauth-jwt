@@ -1,9 +1,6 @@
 package com.example.ex_oauth_jwt.config.jwt;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * packageName    : com.example.ex_oauth_jwt.config.jwt
@@ -20,6 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class Token {
 
     private String accessToken;

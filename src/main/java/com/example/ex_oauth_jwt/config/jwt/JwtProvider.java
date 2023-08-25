@@ -26,8 +26,10 @@ import java.util.Date;
 public class JwtProvider {
 
     // 유효기간 설정. 액세스 토큰 : 10분, 리프레쉬 토큰 : 3주
-    private long tokenPeriod = 1000L * 60L * 10L;
-    private long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
+//    private long tokenPeriod = 1000L * 60L * 10L;
+    private long tokenPeriod = 1000L * 60L * 1L;
+//    private long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
+    private long refreshPeriod = 1000L * 60L * 5L;
     private String secretKey = "secret-key";
 
     @PostConstruct
@@ -89,12 +91,7 @@ public class JwtProvider {
     }
 
     public String getUid(String token) {
-        try {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-        } catch (MalformedJwtException e) {
-            log.error("손상된 토큰");
-            return null;
-        }
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
     public Cookie sendRefreshToken(String refreshToken) {

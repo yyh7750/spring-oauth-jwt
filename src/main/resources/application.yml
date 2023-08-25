@@ -9,7 +9,8 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/oauth_jwt?serverTimezone=Asia/Seoul
     username: root
-    password: yyhj7424@
+#    password: yyhj7424@ # 데스크탑
+    password: yyhj7424 # 노트북
   jpa:
     open-in-view: false
     generate-ddl: true

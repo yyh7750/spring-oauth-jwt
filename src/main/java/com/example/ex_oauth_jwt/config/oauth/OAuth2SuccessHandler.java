@@ -68,7 +68,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 //                // 엑세스 토큰에 권한을 Role.USER 로 생성
 //            }
             
-            // 테스트용이기 때문에 Role.GUEST 로 생성
+            // 엑세스 토큰 발급. 테스트용이기 때문에 Role.GUEST 로 생성
             String accessToken = jwtProvider.generateAccessToken(userDTO.getEmail(), Role.GUEST.getRole());
             String refreshToken = user.getRefreshToken();
             log.info("로그인 시도한 사용자의 리프레시 토큰 : {}", refreshToken);
@@ -88,10 +88,12 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             }
         }
 
+        log.info("====== Token info : {} ======", tokens);
+
         String targetUrl = sendAccessToken(tokens.getAccessToken());
         Cookie cookie = jwtProvider.sendRefreshToken(tokens.getRefreshToken());
 
-        response.setHeader("Authorization", "Bearer " + tokens.getAccessToken());
+        response.setHeader("Authorization", "Bearer-" + tokens.getAccessToken());
         response.addCookie(cookie);
 
         log.info("redirect uri : {}", redirectUrl);
@@ -102,7 +104,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private String sendAccessToken(String accessToken) {
         // 강제 리다이렉트 시 request와 response가 모두 초기화 되기 때문에 url의 파라미터로 엑세스 토큰을 넘겨준다.
         return UriComponentsBuilder.fromUriString(redirectUrl)
-                .queryParam("Authorization", "Bearer " + accessToken)
+                .queryParam("Authorization", "Bearer-" + accessToken)
                 .build().toUriString();
     }
 }
