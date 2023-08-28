@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.CorsFilter;
 
 /**
  * packageName    : com.example.ex_oauth_jwt.config
@@ -33,28 +34,32 @@ public class SecurityConfig {
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler successHandler;
     private final JwtFilter jwtFilter;
+    private final CorsFilter corsFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
                 .csrf().disable()
-                .httpBasic().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .formLogin().disable() // form login 방식 사용하지 않고 rest 방식 사용
+                .httpBasic().disable() // Authorization에 username, password 활용한 방식 사용하지 않음. (jwt 활용한 Bearer 사용)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 사용하지 않음
 
                 .and()
 
+                // 인가 설정
                 .authorizeRequests()
                 .antMatchers("/home/**").permitAll()
-                .antMatchers("/success/**").hasRole(Role.GUEST.getRole())
-                .anyRequest().authenticated()
+                .anyRequest().hasRole(Role.GUEST.getRole())
 
                 .and()
 
+                // oauth login 설정
                 .oauth2Login()
                 .successHandler(successHandler)
                 .userInfoEndpoint().userService(oAuth2UserService);
 
+        http.addFilter(corsFilter);
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
