@@ -82,6 +82,7 @@ public class JwtFilter extends GenericFilterBean {
                 log.info("set Authentication to security context for '{}', uri = {}", authentication.getName(), ((HttpServletRequest) request).getRequestURI());
             }
             // 리프레시 토큰이 일치하지 않거나 유효하지 않다면 엑세스, 리프레시 토큰 재발급
+            // 원래 엑세스 토큰을 재발급할 때 리프레시 토큰도 재발급하는 것을 권장하기 때문에 else if문을 2개 쓰는게 아닌 하나로 묶는 것이 좋다.(위에거랑 아래거)
             else if (refreshToken != null && (!refreshToken.equals(savedRefreshToken) || !jwtProvider.verifyToken(refreshToken))) {
                 Token tokens = jwtProvider.generateToken(loginUser.getEmail(), Role.GUEST.getRole());
 
@@ -108,9 +109,7 @@ public class JwtFilter extends GenericFilterBean {
 
     private String getCookieRefreshToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        System.out.println();
-        System.out.println(Arrays.toString(cookies));
-        System.out.println();
+
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 String name = cookie.getName();

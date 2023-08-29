@@ -27,9 +27,12 @@ public class UserDTO {
 
     private String nickname;
 
+    private String password;
+
     public static UserDTO of(OAuth2User oAuth2User) {
         return UserDTO.builder()
                 .email(oAuth2User.getAttribute("email"))
+                .password(null)
                 .nickname(oAuth2User.getAttribute("nickname"))
                 .build();
     }
@@ -37,6 +40,7 @@ public class UserDTO {
     public static UserDTO of(User user) {
         return UserDTO.builder()
                 .email(user.getEmail())
+                .password(user.getPassword())
                 .nickname(user.getNickname())
                 .build();
     }

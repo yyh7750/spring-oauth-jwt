@@ -50,7 +50,7 @@ public class SecurityConfig {
                 // 인가 설정
                 .authorizeRequests()
                 .antMatchers("/home/**").permitAll()
-                .anyRequest().hasRole(Role.GUEST.getRole())
+                .anyRequest().permitAll()
 
                 .and()
 
